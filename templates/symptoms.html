@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>AI Symptom Checker</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🩺 AI Symptom Checker</h1>
+
+    <p>Select your symptoms below.</p>
+
+    <form id="symptomForm">
+
+        <div class="grid">
+
+            <label><input type="checkbox" id="headache"> Headache</label>
+
+            <label><input type="checkbox" id="fever"> Fever</label>
+
+            <label><input type="checkbox" id="cough"> Cough</label>
+
+            <label><input type="checkbox" id="dizziness"> Dizziness</label>
+
+            <label><input type="checkbox" id="body_pain"> Body Pain</label>
+
+            <label><input type="checkbox" id="chest_pain"> Chest Pain</label>
+
+            <label><input type="checkbox" id="vomiting"> Vomiting</label>
+
+        </div>
+
+        <button type="submit">
+
+            Predict Disease
+
+        </button>
+
+    </form>
+
+    <div id="result">
+
+        <h2>Prediction Result</h2>
+
+        <p><strong>Disease :</strong> <span id="disease"></span></p>
+
+        <p><strong>Confidence :</strong> <span id="confidence"></span></p>
+
+        <p><strong>Risk :</strong> <span id="risk"></span></p>
+
+        <p><strong>Diet :</strong> <span id="diet"></span></p>
+
+        <p><strong>Recommendation :</strong> <span id="solution"></span></p>
+
+    </div>
+
+</div>
+
+<script>
+
+document.getElementById("symptomForm").addEventListener("submit", async function(e){
+
+    e.preventDefault();
+
+    let symptoms=[
+
+        document.getElementById("headache").checked?1:0,
+
+        document.getElementById("fever").checked?1:0,
+
+        document.getElementById("cough").checked?1:0,
+
+        document.getElementById("dizziness").checked?1:0,
+
+        document.getElementById("body_pain").checked?1:0,
+
+        document.getElementById("chest_pain").checked?1:0,
+
+        document.getElementById("vomiting").checked?1:0
+
+    ];
+
+    const response=await fetch("/predict",{
+
+        method:"POST",
+
+        headers:{
+
+            "Content-Type":"application/json"
+
+        },
+
+        body:JSON.stringify({
+
+            symptoms:symptoms
+
+        })
+
+    });
+
+    const data=await response.json();
+
+    document.getElementById("disease").innerHTML=data.disease;
+
+    document.getElementById("confidence").innerHTML=data.confidence+" %";
+
+    document.getElementById("risk").innerHTML=data.risk;
+
+    document.getElementById("diet").innerHTML=data.diet;
+
+    document.getElementById("solution").innerHTML=data.solution;
+
+});
+
+</script>
+
+</body>
+
+</html>
